@@ -1,0 +1,27 @@
+version: '3'
+services:
+  db:
+    image: postgres:12
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=root
+
+  redis:
+    image: "redis:alpine"
+    ports:
+     - 6379:6379
+
+  app:
+   build:
+     context: src
+   environment:
+     - APP_CONFIG=config.yaml
+     - PYTHONPATH=src
+   ports:
+     - 8000:8000
+   depends_on:
+     - db
+   restart: always

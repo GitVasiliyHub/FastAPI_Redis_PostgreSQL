@@ -1,0 +1,9 @@
+pg:
+  dbname: postgres
+  host: db
+  login: root
+  port: 5432
+  password: root
+redis:
+  host: redis
+  port: 6379
