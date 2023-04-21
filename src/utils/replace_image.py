@@ -26,6 +26,7 @@ class ImageLoader:
             self.stock = self.stock / self.category
 
         with self.redis_client.client as client:
+
             for file_path in file_paths(self.stock):
                 img_byte_arr = BytesIO()
                 image = Image.open(file_path)
@@ -51,9 +52,14 @@ class ImageDownloader:
 
         with self.redis_client.client as client:
             while True:
-                _, img_byte_arr = client.brpop('images')
-                image = Image.open(BytesIO(img_byte_arr))
-                print(image.size)
+                img_byte_arr = client.brpop('images', 3)
+
+                if img_byte_arr is None:
+                    print('Время ожидания истекло')
+                    return
+
+                image = Image.open(BytesIO(img_byte_arr[1]))
+
                 dataframe = pd.DataFrame({
                     'datetime': [time_now()],
                     'size': [image.size],
